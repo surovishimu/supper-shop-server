@@ -1,9 +1,9 @@
 const express = require('express');
-const cors = require('cors');
 const app = express();
-require('dotenv').config();
+const cors = require('cors');
+require('dotenv').config()
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5000
 
 
 // middleware
@@ -26,7 +26,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+
         const productCollection = client.db("productDB").collection("products");
         const cartProductCollection = client.db("cartCollection").collection("cartProducts");
 
@@ -76,6 +76,14 @@ async function run() {
             const result = await productCollection.findOne(query);
             res.send(result)
         })
+        app.delete('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {
+                _id: new ObjectId(id),
+            }
+            const result = await productCollection.deleteOne(query);
+            res.send(result)
+        })
 
         app.put('/products/:id', async (req, res) => {
             const id = req.params.id;
@@ -87,7 +95,7 @@ async function run() {
                     image: updateProduct.image,
                     name: updateProduct.name,
                     type: updateProduct.type,
-                    // description: updateProduct.description,
+                    description: updateProduct.description,
                     price: updateProduct.price,
                     rating: updateProduct.rating
                 }
@@ -98,7 +106,7 @@ async function run() {
         })
 
         // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
+
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
